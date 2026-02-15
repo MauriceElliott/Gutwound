@@ -4,6 +4,7 @@ final class Game: PlaydateGame {
     let casper = Casper()
     let player: Player
     init() {
+        Display.scale = Display.Scale.twoTimes
         player = Player("Images/Character/man", x: 200, y: 120)
     }
     func update() -> Bool {
