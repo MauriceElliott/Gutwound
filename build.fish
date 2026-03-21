@@ -1,27 +1,28 @@
 #!/usr/bin/env fish
 
-# Fixes an issue for Linux, or possibly specifically my gentoo install when when compiling, swift can't find my studio.h file.
-if test (hostname) = eighthcircle
-    set -x ARM_NONE_EABI_GCC_PATH /usr/lib/gcc/arm-none-eabi/15
-    set -x ARM_NONE_EABI_SYSROOT_PATH /usr/arm-none-eabi
-end
-
-if test (hostname) = ninthCircle
-    set -x TOOLCHAINS swift
-    source ~/.config/fish/_9thCircle.fish
-end
-
 set PRODUCT_NAME Gutwound
+set BUILD_DIR build
+set PDX_DIR $BUILD_DIR/$PRODUCT_NAME.pdx
 set GAME_PATH $PLAYDATE_SDK_PATH/Disk/Games/$PRODUCT_NAME.pdx
-# TOOLCHAINS variable removed - using .swift-version file instead
 
-swift package pdc 2>&1 | grep -v "libtinfo.so.6: no version information" | grep -v "libxml2.so.2: no version information" | grep -v "libcurl.so.4: no version information"
+# Build shared library for the simulator
+mkdir -p $BUILD_DIR
+odin build src/ -out:$BUILD_DIR/pdex.so -build-mode:shared -default-to-nil-allocator; or exit 1
 
+# Copy assets into build dir for pdc
+cp src/pdxinfo $BUILD_DIR/
+if test -d src/Images
+    cp -r src/Images $BUILD_DIR/
+end
+
+# Compile with Playdate compiler
+$PLAYDATE_SDK_PATH/bin/pdc $BUILD_DIR $PDX_DIR; or exit 1
+
+# Symlink into simulator games folder
 if test -L $GAME_PATH
     rm -rf $GAME_PATH
 end
-ln -s (pwd)/.build/plugins/PDCPlugin/outputs/$PRODUCT_NAME.pdx $GAME_PATH
+ln -s (pwd)/$PDX_DIR $GAME_PATH
 
-cd .build
-
+# Run simulator
 $PDSIM $GAME_PATH
