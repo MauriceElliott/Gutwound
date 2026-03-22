@@ -18,7 +18,7 @@ room_create :: proc(image_path: cstring) -> Room {
 	pd_api.sprite.set_image(room.sprite, image, .Unflipped)
 
 	pd_api.sprite.add_sprite(room.sprite)
-	pd_api.sprite.move_to(room.sprite, 100, 60)
+	pd_api.sprite.move_to(room.sprite, 200, 120)
 
 	return room
 }

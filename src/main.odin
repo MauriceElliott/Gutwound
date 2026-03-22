@@ -35,9 +35,8 @@ update_callback :: proc "c" (userdata: rawptr) -> pd.Update_Result {
 }
 
 game_init :: proc() {
-	pd_api.display.set_scale(._2)
 	game_state.casper = floor_create()
-	game_state.player = player_create("Images/Character/man", 200, 120)
+	game_state.player = player_create("/Images/Character/BigMan.png", 200, 120)
 }
 
 game_update :: proc() {
