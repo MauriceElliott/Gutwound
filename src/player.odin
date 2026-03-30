@@ -2,16 +2,12 @@ package game
 
 import pd "../packages"
 
-Player_Vitals :: struct {
-	health:      f32,
-	wound:       f32,
-	delirium:    f32,
-	temperature: f32,
-	exhaustion:  f32,
-	pain:        f32,
-	hunger:      f32,
-	thirst:      f32,
+Vital :: struct {
+	name:  string,
+	value: f32,
 }
+
+Player_Vitals :: [8]Vital
 
 Player_State :: enum {
 	none      = 1,
@@ -29,7 +25,7 @@ Player :: struct {
 	width:  f32,
 	height: f32,
 	state:  Player_State,
-	vitals: ^Player_Vitals,
+	vitals: Player_Vitals,
 }
 
 //Visuals
@@ -42,14 +38,14 @@ player_create :: proc(
 ) -> Player {
 
 	player_vitals := Player_Vitals {
-		health      = 100,
-		wound       = 100,
-		delirium    = 0,
-		temperature = 0,
-		exhaustion  = 0,
-		pain        = 0,
-		hunger      = 0,
-		thirst      = 0,
+		Vital{"health", 100},
+		Vital{"wound", 0},
+		Vital{"delirium", 0},
+		Vital{"temperature", 0},
+		Vital{"exhaustion", 0},
+		Vital{"pain", 0},
+		Vital{"hunger", 0},
+		Vital{"thirst", 0},
 	}
 
 	player := Player {
@@ -58,7 +54,7 @@ player_create :: proc(
 		width  = width,
 		height = height,
 		state  = .none,
-		vitals = &player_vitals,
+		vitals = player_vitals,
 	}
 
 	player.sprite = pd_api.sprite.new_sprite()
@@ -84,6 +80,7 @@ player_create :: proc(
 player_sprite_update :: proc "c" (sprite: ^pd.Sprite) {
 	context = global_ctx
 	player_process_move(&game_state.player)
+	player_vitals_update(&game_state.player)
 }
 
 //Movement
@@ -91,15 +88,68 @@ player_process_move :: proc(player: ^Player) {
 	current: pd.Buttons
 	pd_api.system.get_button_state(&current, nil, nil)
 
-	if .Down in current do pd_api.sprite.move_by(player.sprite, 0, 1)
-	if .Left in current do pd_api.sprite.move_by(player.sprite, -1, 0)
-	if .Right in current do pd_api.sprite.move_by(player.sprite, 1, 0)
-	if .Up in current do pd_api.sprite.move_by(player.sprite, 0, -1)
+	if .Down in current {
+		pd_api.sprite.move_by(player.sprite, 0, 1)
+		player.state = .walking
+	} else if .Left in current {
+		pd_api.sprite.move_by(player.sprite, -1, 0)
+		player.state = .walking
+	} else if .Right in current {
+		pd_api.sprite.move_by(player.sprite, 1, 0)
+		player.state = .walking
+	} else if .Up in current {
+		pd_api.sprite.move_by(player.sprite, 0, -1)
+		player.state = .walking
+	} else {
+		player.state = .none
+	}
 }
 
 //Vitals
-penalty :: 1
+get_vital :: proc(vitals: ^Player_Vitals, name: string) -> f32 {
+	for vital in vitals {
+		if vital.name == name {
+			return vital.value
+		}
+	}
+	return 0
+}
+
+set_vital :: proc(vitals: ^Player_Vitals, name: string, value: f32) {
+	for i := 0; i < len(vitals); i += 1 {
+		if vitals[i].name == name {
+			vitals[i].value = value
+			return
+		}
+	}
+}
+
+adjust_vital :: proc(vitals: ^Player_Vitals, name: string, amount: f32) {
+	for i := 0; i < len(vitals); i += 1 {
+		if vitals[i].name == name {
+			vitals[i].value += amount
+			return
+		}
+	}
+}
+
+get_vital_modifier :: proc(value: f32) -> f32 {
+	modifier: f32 = 1
+	if value >= 30 {
+		modifier = 0.15
+	} else if value < 30 && value >= 60 {
+		modifier = 0.5
+	} else if value < 60 && value >= 90 {
+		modifier = 0.75
+	}
+	return modifier
+}
+
+penalty: f32 : 1
+
 player_vitals_update :: proc(player: ^Player) {
+	pd_api.system.log_to_console("Length: %s", len(player.vitals))
+
 	multiplier: f32 = 0
 
 	switch player.state {
@@ -117,6 +167,13 @@ player_vitals_update :: proc(player: ^Player) {
 		multiplier = -1.3
 	}
 
-	//TO BE CONTINUED, Health and stats decrease with muliplyer and penalty
+	pd_api.system.log_to_console("Length: %s", len(player.vitals))
+
+	for vital in player.vitals {
+		modifier := get_vital_modifier(vital.value)
+		final_adjustment := multiplier * modifier * penalty
+		pd_api.system.log_to_console("Vital: %s, Adjustment: %f", vital.name, final_adjustment)
+		// adjust_vital(player.vitals, vital.name, final_adjustment)
+	}
 }
 
