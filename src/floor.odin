@@ -9,7 +9,7 @@ floor_create :: proc(rooms: []Room = nil) -> Floor {
 	floor.rooms = make([dynamic]Room, 0, max(len(rooms), 4))
 
 	if len(rooms) == 0 {
-		append(&floor.rooms, room_create("Images/Rooms/TestRoom/testRoom.png"))
+		append(&floor.rooms, room_create("Assets/Images/Rooms/TestRoom/testRoom.png"))
 	} else {
 		for room in rooms {
 			append(&floor.rooms, room)
