@@ -1,6 +1,8 @@
 package game
 
 import pd "../packages"
+import fmt "core:fmt"
+import str "core:strings"
 
 Vital :: struct {
 	name:  string,
@@ -26,6 +28,7 @@ Player :: struct {
 	height: f32,
 	state:  Player_State,
 	vitals: Player_Vitals,
+	speed:  f32,
 }
 
 //Visuals
@@ -55,6 +58,7 @@ player_create :: proc(
 		height = height,
 		state  = .none,
 		vitals = player_vitals,
+		speed  = 1.5,
 	}
 
 	player.sprite = pd_api.sprite.new_sprite()
@@ -87,18 +91,19 @@ player_sprite_update :: proc "c" (sprite: ^pd.Sprite) {
 player_process_move :: proc(player: ^Player) {
 	current: pd.Buttons
 	pd_api.system.get_button_state(&current, nil, nil)
+	adjustment_value := player.speed
 
 	if .Down in current {
-		pd_api.sprite.move_by(player.sprite, 0, 1)
+		pd_api.sprite.move_by(player.sprite, 0, adjustment_value)
 		player.state = .walking
 	} else if .Left in current {
-		pd_api.sprite.move_by(player.sprite, -1, 0)
+		pd_api.sprite.move_by(player.sprite, -adjustment_value, 0)
 		player.state = .walking
 	} else if .Right in current {
-		pd_api.sprite.move_by(player.sprite, 1, 0)
+		pd_api.sprite.move_by(player.sprite, adjustment_value, 0)
 		player.state = .walking
 	} else if .Up in current {
-		pd_api.sprite.move_by(player.sprite, 0, -1)
+		pd_api.sprite.move_by(player.sprite, 0, -adjustment_value)
 		player.state = .walking
 	} else {
 		player.state = .none
@@ -148,7 +153,6 @@ get_vital_modifier :: proc(value: f32) -> f32 {
 penalty: f32 : 1
 
 player_vitals_update :: proc(player: ^Player) {
-	pd_api.system.log_to_console("Length: %s", len(player.vitals))
 
 	multiplier: f32 = 0
 
@@ -167,13 +171,11 @@ player_vitals_update :: proc(player: ^Player) {
 		multiplier = -1.3
 	}
 
-	pd_api.system.log_to_console("Length: %s", len(player.vitals))
-
 	for vital in player.vitals {
 		modifier := get_vital_modifier(vital.value)
 		final_adjustment := multiplier * modifier * penalty
-		pd_api.system.log_to_console("Vital: %s, Adjustment: %f", vital.name, final_adjustment)
-		// adjust_vital(player.vitals, vital.name, final_adjustment)
+		log("Vital: %s, Adjustment: %f", vital.name, final_adjustment)
+		adjust_vital(&player.vitals, vital.name, final_adjustment)
 	}
 }
 

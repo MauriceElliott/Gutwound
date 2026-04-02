@@ -8,8 +8,9 @@ global_ctx: runtime.Context
 game_state: Game
 
 Game :: struct {
-	casper: Floor,
-	player: Player,
+	casper:       Floor,
+	player:       Player,
+	log_messages: [dynamic]cstring,
 }
 
 @(export)
@@ -41,5 +42,6 @@ game_init :: proc() {
 
 game_update :: proc() {
 	pd_api.sprite.update_and_draw_sprites()
+	draw_logs()
 }
 
