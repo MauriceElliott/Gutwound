@@ -1,8 +1,6 @@
 package game
 
-import pd "../packages/odin-playdate"
-import fmt "core:fmt"
-import str "core:strings"
+import pd "../packages"
 
 Vital :: struct {
 	name:  string,

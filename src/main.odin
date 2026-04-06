@@ -1,6 +1,6 @@
 package game
 
-import pd "../packages/odin-playdate"
+import pd "../packages"
 import "base:runtime"
 
 pd_api: ^pd.Api
