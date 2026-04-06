@@ -38,15 +38,15 @@ update_callback :: proc "c" (userdata: rawptr) -> pd.Update_Result {
 game_init :: proc() {
 	game_state.casper = floor_create()
 	game_state.player = player_create("Assets/Images/Character/BigMan.png", 200, 120)
-	out_error: cstring = ""
-	exerion_font := pd_api.graphics.load_font("Asset/Fonts/Exerion.fnt", &out_error)
-	if out_error != nil {
+	// out_error: cstring = ""
+	// exerion_font := pd_api.graphics.load_font("Asset/Fonts/Exerion.fnt", &out_error)
+	// if out_error != nil {
 
-	}
+	// }
 }
 
 game_update :: proc() {
 	pd_api.sprite.update_and_draw_sprites()
-	draw_logs()
+	// draw_logs()
 }
 

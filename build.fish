@@ -11,8 +11,8 @@ odin build src/ -out:$BUILD_DIR/pdex.so -build-mode:shared -default-to-nil-alloc
 
 # Copy assets into build dir for pdc
 cp src/pdxinfo $BUILD_DIR/
-if test -d src/Images
-    cp -r src/Images $BUILD_DIR/
+if test -d src/Assets
+    cp -r src/Assets $BUILD_DIR/
 end
 
 # Compile with Playdate compiler
