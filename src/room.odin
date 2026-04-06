@@ -1,6 +1,6 @@
 package game
 
-import pd "../packages"
+import pd "../packages/odin-playdate"
 
 Room :: struct {
 	sprite: ^pd.Sprite,

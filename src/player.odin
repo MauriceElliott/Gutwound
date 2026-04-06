@@ -1,6 +1,6 @@
 package game
 
-import pd "../packages"
+import pd "../packages/odin-playdate"
 import fmt "core:fmt"
 import str "core:strings"
 
