@@ -172,7 +172,7 @@ player_vitals_update :: proc(player: ^Player) {
 	for vital in player.vitals {
 		modifier := get_vital_modifier(vital.value)
 		final_adjustment := multiplier * modifier * penalty
-		// log("Vital: %s, Adjustment: %f", vital.name, final_adjustment)
+		log("Vital: %s, Adjustment: %f", vital.name, final_adjustment)
 		adjust_vital(&player.vitals, vital.name, final_adjustment)
 	}
 }
