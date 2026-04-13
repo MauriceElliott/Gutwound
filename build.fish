@@ -7,7 +7,7 @@ set GAME_PATH $PLAYDATE_SDK_PATH/Disk/Games/$PRODUCT_NAME.pdx
 
 # Build shared library for the simulator
 mkdir -p $BUILD_DIR
-odin build src/ -out:$BUILD_DIR/pdex.so -build-mode:shared -default-to-nil-allocator; or exit 1
+odin build src/ -out:$BUILD_DIR/pdex.dylib -build-mode:shared -default-to-nil-allocator; or exit 1
 
 # Copy assets into build dir for pdc
 cp src/pdxinfo $BUILD_DIR/
