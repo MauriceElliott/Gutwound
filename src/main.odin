@@ -39,7 +39,7 @@ game_init :: proc() {
 	game_state.casper = floor_create()
 	game_state.player = player_create("Assets/Images/Character/BigMan.png", 200, 120)
 	out_error: cstring = ""
-	exerion_font := pd_api.graphics.load_font("Assets/Fonts/KonamiGT.pft", &out_error)
+	exerion_font := pd_api.graphics.load_font("Assets/Fonts/onyx_9.pft", &out_error)
 	if out_error != nil {
 		log(out_error)
 	}
