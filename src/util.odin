@@ -27,12 +27,12 @@ log :: proc {
 
 draw_logs :: proc() {
 	x: i32 = 0
-	y: i32 = 0
+	y: i32 = 160
 
 	pd_api.graphics.set_draw_mode(.Fill_White)
 	for log_message in game_state.log_messages {
 		pd_api.graphics.draw_text(log_message, len(log_message), .ASCII, x, y)
-		y += 20
+		y += 10
 	}
 	pd_api.graphics.set_draw_mode(.Fill_Black)
 	clear(&game_state.log_messages)
