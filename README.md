@@ -62,3 +62,6 @@ For the code, I want to make sure that I can properly structure the game so that
 For this we will use the core principal of data vs manipulator, i.e. I will use classes and structs for data and objects, with functions that are separated into libraries depending on the objects they are responsible for manipulating.
 
 Then we will also use a scene based state structure where we will have a central scene manager that has responsibility for floor/level vs menu/healing menu/game progress etc. This will give us enough structure for the size of game we are aiming for and will help to manage state.
+
+## Note on protective suit
+Should have to start with, but can upgrade/repair to add capabilities like cold protection, toxic/radiation protection, etc, use items you find on the floors.

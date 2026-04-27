@@ -38,3 +38,12 @@ draw_logs :: proc() {
 	clear(&game_state.log_messages)
 }
 
+load_font :: proc(path: cstring) -> ^pd.Font {
+	out_error: cstring = ""
+	font := pd_api.graphics.load_font(path, &out_error)
+	if out_error != nil {
+		log(out_error)
+	}
+	return font
+}
+

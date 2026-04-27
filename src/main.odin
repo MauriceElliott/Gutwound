@@ -7,6 +7,9 @@ pd_api: ^pd.Api
 global_ctx: runtime.Context
 game_state: Game
 
+general_font: ^pd.Font
+dialogue_font: ^pd.Font
+
 Game :: struct {
 	casper:       Floor,
 	player:       Player,
@@ -37,13 +40,10 @@ update_callback :: proc "c" (userdata: rawptr) -> pd.Update_Result {
 
 game_init :: proc() {
 	game_state.casper = floor_create()
-	game_state.player = player_create("Assets/Images/Character/BigMan.png", 200, 120)
-	out_error: cstring = ""
-	exerion_font := pd_api.graphics.load_font("Assets/Fonts/onyx_9.pft", &out_error)
-	if out_error != nil {
-		log(out_error)
-	}
-	pd_api.graphics.set_font(exerion_font)
+	game_state.player = player_create("assets/bitmaps/characters/FullsizeMan.png", 200, 120)
+	dialogue_font := load_font("assets/fonts/garnet_9.pft")
+	general_font := load_font("assets/fonts/onyx_9.pft")
+	pd_api.graphics.set_font(general_font)
 }
 
 game_update :: proc() {
