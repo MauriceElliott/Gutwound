@@ -1,0 +1,55 @@
+{ "frames": {
+   "FullsizeMan 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 48, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 66 },
+    "sourceSize": { "w": 48, "h": 66 },
+    "duration": 1000
+   },
+   "FullsizeMan 1.aseprite": {
+    "frame": { "x": 48, "y": 0, "w": 48, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 66 },
+    "sourceSize": { "w": 48, "h": 66 },
+    "duration": 1000
+   },
+   "FullsizeMan 2.aseprite": {
+    "frame": { "x": 96, "y": 0, "w": 48, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 66 },
+    "sourceSize": { "w": 48, "h": 66 },
+    "duration": 1000
+   },
+   "FullsizeMan 3.aseprite": {
+    "frame": { "x": 144, "y": 0, "w": 48, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 66 },
+    "sourceSize": { "w": 48, "h": 66 },
+    "duration": 1000
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.17.1-x64",
+  "image": "FullsizeMan.png",
+  "format": "I8",
+  "size": { "w": 192, "h": 66 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Helmet", "opacity": 255, "blendMode": "normal" },
+   { "name": "Torso", "opacity": 255, "blendMode": "normal" },
+   { "name": "Left Arm", "opacity": 255, "blendMode": "normal" },
+   { "name": "Right leg", "opacity": 255, "blendMode": "normal" },
+   { "name": "Right Arm", "opacity": 255, "blendMode": "normal" },
+   { "name": "Left leg", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
