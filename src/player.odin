@@ -19,14 +19,15 @@ Player_State :: enum {
 }
 
 Player :: struct {
-	sprite: ^pd.Sprite,
-	x:      f32,
-	y:      f32,
-	width:  f32,
-	height: f32,
-	state:  Player_State,
-	vitals: Player_Vitals,
-	speed:  f32,
+	sprite:   ^pd.Sprite,
+	x:        f32,
+	y:        f32,
+	width:    f32,
+	height:   f32,
+	state:    Player_State,
+	vitals:   Player_Vitals,
+	speed:    f32,
+	animator: Animator,
 }
 
 //Visuals
@@ -69,9 +70,9 @@ player_create :: proc(
 		pd.PDRect{bounds_x, bounds_y, player.width, player.height},
 	)
 
-	err: cstring
-	image := pd_api.graphics.load_bitmap(image_path, &err)
-	pd_api.sprite.set_image(player.sprite, image, .Unflipped)
+	player.animator = animator_create(image_path, 4, 1000)
+	initial_frame := pd_api.graphics.get_table_bitmap(player.animator.table, 0)
+	pd_api.sprite.set_image(player.sprite, initial_frame, .Unflipped)
 
 	pd_api.sprite.set_update_function(player.sprite, player_sprite_update)
 	pd_api.sprite.add_sprite(player.sprite)
@@ -83,6 +84,7 @@ player_sprite_update :: proc "c" (sprite: ^pd.Sprite) {
 	context = global_ctx
 	player_process_move(&game_state.player)
 	player_vitals_update(&game_state.player)
+	animator_update(&game_state.player.animator, sprite)
 }
 
 //Movement

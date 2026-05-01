@@ -5,14 +5,22 @@ set BUILD_DIR build
 set PDX_DIR $BUILD_DIR/$PRODUCT_NAME.pdx
 set GAME_PATH $PLAYDATE_SDK_PATH/Disk/Games/$PRODUCT_NAME.pdx
 
+# Platform-specific shared library extension
+switch (uname)
+    case Darwin
+        set LIB_EXT dylib
+    case '*'
+        set LIB_EXT so
+end
+
 # Build shared library for the simulator
 mkdir -p $BUILD_DIR
-odin build src/ -out:$BUILD_DIR/pdex.dylib -build-mode:shared -default-to-nil-allocator; or exit 1
+odin build src/ -out:$BUILD_DIR/pdex.$LIB_EXT -build-mode:shared -default-to-nil-allocator; or exit 1
 
 # Copy assets into build dir for pdc
 cp src/pdxinfo $BUILD_DIR/
-if test -d src/Assets
-    cp -r src/Assets $BUILD_DIR/
+if test -d src/assets
+    cp -r src/assets $BUILD_DIR/
 end
 
 # Compile with Playdate compiler

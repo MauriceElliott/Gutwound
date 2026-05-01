@@ -1,11 +1,12 @@
 package game
 
 import pd "../packages"
+import "core:c"
 import fmt "core:fmt"
 import str "core:strings"
 
 log_handler :: proc(format: cstring, args: ..any) {
-	pd_api.system.log_to_console(format)
+	// pd_api.system.log_to_console(format)
 	pd_api.graphics.set_draw_mode(.Fill_White)
 	pd_api.graphics.draw_text(format, len(format), .ASCII, 100, 100)
 	append(&game_state.log_messages, format)
@@ -36,6 +37,45 @@ draw_logs :: proc() {
 	}
 	pd_api.graphics.set_draw_mode(.Fill_Black)
 	clear(&game_state.log_messages)
+}
+
+// Animation
+
+Animator :: struct {
+	table:           ^pd.Bitmap_Table,
+	frame_count:     int,
+	current_frame:   int,
+	frame_duration:  u32,
+	last_frame_time: u32,
+}
+
+animator_create :: proc(path: cstring, frame_count: int, frame_duration_ms: u32) -> Animator {
+	err: cstring
+	table := pd_api.graphics.load_bitmap_table(path, &err)
+	if err != nil {
+		log(err)
+	}
+	return Animator{
+		table           = table,
+		frame_count     = frame_count,
+		current_frame   = 0,
+		frame_duration  = frame_duration_ms,
+		last_frame_time = pd_api.system.get_current_time_milliseconds(),
+	}
+}
+
+animator_update :: proc(animator: ^Animator, sprite: ^pd.Sprite) {
+	now := pd_api.system.get_current_time_milliseconds()
+	if now - animator.last_frame_time >= animator.frame_duration {
+		animator.current_frame = (animator.current_frame + 1) % animator.frame_count
+		frame := pd_api.graphics.get_table_bitmap(animator.table, cast(c.int)animator.current_frame)
+		pd_api.sprite.set_image(sprite, frame, .Unflipped)
+		animator.last_frame_time = now
+	}
+}
+
+animator_destroy :: proc(animator: ^Animator) {
+	pd_api.graphics.free_bitmap_table(animator.table)
 }
 
 load_font :: proc(path: cstring) -> ^pd.Font {
