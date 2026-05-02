@@ -6,7 +6,7 @@ import fmt "core:fmt"
 import str "core:strings"
 
 log_handler :: proc(format: cstring, args: ..any) {
-	// pd_api.system.log_to_console(format)
+	pd_api.system.log_to_console(format)
 	pd_api.graphics.set_draw_mode(.Fill_White)
 	pd_api.graphics.draw_text(format, len(format), .ASCII, 100, 100)
 	append(&game_state.log_messages, format)
@@ -66,7 +66,7 @@ animator_create :: proc(path: cstring, frame_count: int, frame_duration_ms: u32)
 
 animator_update :: proc(animator: ^Animator, sprite: ^pd.Sprite) {
 	now := pd_api.system.get_current_time_milliseconds()
-	if now - animator.last_frame_time >= animator.frame_duration {
+	if (now - animator.last_frame_time) >= animator.frame_duration {
 		animator.current_frame = (animator.current_frame + 1) % animator.frame_count
 		frame := pd_api.graphics.get_table_bitmap(animator.table, cast(c.int)animator.current_frame)
 		pd_api.sprite.set_image(sprite, frame, .Unflipped)
