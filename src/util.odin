@@ -6,7 +6,7 @@ import fmt "core:fmt"
 import str "core:strings"
 
 log_handler :: proc(format: cstring, args: ..any) {
-	pd_api.system.log_to_console(format)
+	// pd_api.system.log_to_console(format)
 	pd_api.graphics.set_draw_mode(.Fill_White)
 	pd_api.graphics.draw_text(format, len(format), .ASCII, 100, 100)
 	append(&game_state.log_messages, format)
