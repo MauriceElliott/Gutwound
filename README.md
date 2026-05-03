@@ -65,3 +65,26 @@ Then we will also use a scene based state structure where we will have a central
 
 ## Note on protective suit
 Should have to start with, but can upgrade/repair to add capabilities like cold protection, toxic/radiation protection, etc, use items you find on the floors.
+
+
+## Todo list
+
+1. Animate character
+	1. [x] Work out how to create animations in Asperite
+	2. [ ] Animate walk cycle down
+	3. [x] Code up animation in engine
+	4. [ ] Create workflow
+	5. [ ] Animate walk cycle left
+	6. [ ] “” up
+	7. [x] “” idle down
+	8. [ ] “” idle left
+	9. [ ] “” idle left
+2. Create map pipeline
+	1. [ ] Create way to generate rooms with collision baked in use aseprite
+	2. [ ] Create way to display and tile those on the screen
+3. Create collision interactions
+	1. [ ]  create way to define player collision
+	2. [ ]  Create way for player to see they have colided with something, maybe a minor push back animation or something
+	3. [ ]  Consider blocking and none blocking furniture
+	4. [ ]  X/y axis for when you do or don’t interact with furniture i.e. you should be able to walk behind and in front of furniture depending on you and its y position.
+4. Create ways to define the layers, colission flags etc
