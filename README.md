@@ -78,7 +78,6 @@ Should have to start with, but can upgrade/repair to add capabilities like cold 
 	6. [ ] “” up
 	7. [x] “” idle down
 	8. [ ] “” idle left
-	9. [ ] “” idle left
 2. Create map pipeline
 	1. [ ] Create way to generate rooms with collision baked in use aseprite
 	2. [ ] Create way to display and tile those on the screen
