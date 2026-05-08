@@ -18,16 +18,24 @@ Player_State :: enum {
 	running   = 6,
 }
 
+Player_Direction :: enum {
+	down  = 1,
+	up    = 2,
+	left  = 3,
+	right = 4,
+}
+
 Player :: struct {
-	sprite:   ^pd.Sprite,
-	x:        f32,
-	y:        f32,
-	width:    f32,
-	height:   f32,
-	state:    Player_State,
-	vitals:   Player_Vitals,
-	speed:    f32,
-	animator: Animator,
+	sprite:    ^pd.Sprite,
+	x:         f32,
+	y:         f32,
+	width:     f32,
+	height:    f32,
+	state:     Player_State,
+	vitals:    Player_Vitals,
+	direction: Player_Direction,
+	speed:     f32,
+	animator:  Animator,
 }
 
 //Visuals
@@ -96,15 +104,19 @@ player_process_move :: proc(player: ^Player) {
 	if .Down in current {
 		pd_api.sprite.move_by(player.sprite, 0, adjustment_value)
 		player.state = .walking
+		player.direction = .down
 	} else if .Left in current {
 		pd_api.sprite.move_by(player.sprite, -adjustment_value, 0)
 		player.state = .walking
+		player.direction = .left
 	} else if .Right in current {
 		pd_api.sprite.move_by(player.sprite, adjustment_value, 0)
 		player.state = .walking
+		player.direction = .right
 	} else if .Up in current {
 		pd_api.sprite.move_by(player.sprite, 0, -adjustment_value)
 		player.state = .walking
+		player.direction = .up
 	} else {
 		player.state = .none
 	}
