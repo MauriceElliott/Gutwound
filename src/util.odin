@@ -9,7 +9,7 @@ log_handler :: proc(format: cstring, args: ..any) {
 	// pd_api.system.log_to_console(format)
 	pd_api.graphics.set_draw_mode(.Fill_White)
 	pd_api.graphics.draw_text(format, len(format), .ASCII, 100, 100)
-	append(&game_state.log_messages, format)
+	append(&gs.log_messages, format)
 }
 
 string_log :: proc(format: string, args: ..any) {
@@ -31,12 +31,12 @@ draw_logs :: proc() {
 	y: i32 = 160
 
 	pd_api.graphics.set_draw_mode(.Fill_White)
-	for log_message in game_state.log_messages {
+	for log_message in gs.log_messages {
 		pd_api.graphics.draw_text(log_message, len(log_message), .ASCII, x, y)
 		y += 10
 	}
 	pd_api.graphics.set_draw_mode(.Fill_Black)
-	clear(&game_state.log_messages)
+	clear(&gs.log_messages)
 }
 
 // Animation
@@ -49,17 +49,23 @@ Animator :: struct {
 	last_frame_time: u32,
 }
 
-animator_create :: proc(path: cstring, frame_count: int, frame_duration_ms: u32) -> Animator {
+Animation :: struct {
+	path:           cstring,
+	frame_count:    int,
+	frame_duration: u32,
+}
+
+animator_create :: proc(anim: ^Animation) -> Animator {
 	err: cstring
-	table := pd_api.graphics.load_bitmap_table(path, &err)
+	table := pd_api.graphics.load_bitmap_table(anim.path, &err)
 	if err != nil {
 		log(err)
 	}
 	return Animator {
 		table = table,
-		frame_count = frame_count,
+		frame_count = anim.frame_count,
 		current_frame = 0,
-		frame_duration = frame_duration_ms,
+		frame_duration = anim.frame_duration,
 		last_frame_time = pd_api.system.get_current_time_milliseconds(),
 	}
 }

@@ -5,7 +5,7 @@ import "base:runtime"
 
 pd_api: ^pd.Api
 global_ctx: runtime.Context
-game_state: Game
+gs: Game
 
 general_font: ^pd.Font
 dialogue_font: ^pd.Font
@@ -39,8 +39,8 @@ update_callback :: proc "c" (userdata: rawptr) -> pd.Update_Result {
 }
 
 game_init :: proc() {
-	game_state.casper = floor_create()
-	game_state.player = player_create("assets/bitmaps/characters/man-idle-down", 200, 120)
+	gs.casper = floor_create()
+	gs.player = player_create("assets/bitmaps/characters/man-idle-down", 200, 120)
 	dialogue_font := load_font("assets/fonts/garnet_9.pft")
 	general_font := load_font("assets/fonts/onyx_9.pft")
 	pd_api.graphics.set_font(general_font)

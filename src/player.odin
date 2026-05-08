@@ -10,7 +10,7 @@ Vital :: struct {
 Player_Vitals :: [8]Vital
 
 Player_State :: enum {
-	none      = 1,
+	idle      = 1,
 	walking   = 2,
 	searching = 3,
 	consuming = 4,
@@ -26,19 +26,33 @@ Player_Direction :: enum {
 }
 
 Player :: struct {
-	sprite:    ^pd.Sprite,
-	x:         f32,
-	y:         f32,
-	width:     f32,
-	height:    f32,
-	state:     Player_State,
-	vitals:    Player_Vitals,
-	direction: Player_Direction,
-	speed:     f32,
-	animator:  Animator,
+	sprite:     ^pd.Sprite,
+	x:          f32,
+	y:          f32,
+	width:      f32,
+	height:     f32,
+	state:      Player_State,
+	prev_state: Player_State,
+	vitals:     Player_Vitals,
+	direction:  Player_Direction,
+	speed:      f32,
+	animator:   Animator,
 }
 
 //Visuals
+
+anim_idle_down := Animation {
+	path           = "assets/bitmaps/characters/man-idle-down",
+	frame_count    = 6,
+	frame_duration = 1000,
+}
+
+anim_idle_up := Animation {
+	path           = "assets/bitmaps/characters/man-idle-up",
+	frame_count    = 4,
+	frame_duration = 1000,
+}
+
 player_create :: proc(
 	image_path: cstring,
 	x: f32,
@@ -59,13 +73,14 @@ player_create :: proc(
 	}
 
 	player := Player {
-		x      = x,
-		y      = y,
-		width  = width,
-		height = height,
-		state  = .none,
-		vitals = player_vitals,
-		speed  = 1.5,
+		x          = x,
+		y          = y,
+		width      = width,
+		height     = height,
+		state      = .idle,
+		prev_state = .idle,
+		vitals     = player_vitals,
+		speed      = 1.5,
 	}
 
 	player.sprite = pd_api.sprite.new_sprite()
@@ -78,7 +93,7 @@ player_create :: proc(
 		pd.PDRect{bounds_x, bounds_y, player.width, player.height},
 	)
 
-	player.animator = animator_create(image_path, 6, 1000)
+	player.animator = animator_create(&anim_idle_down)
 	initial_frame := pd_api.graphics.get_table_bitmap(player.animator.table, 0)
 	pd_api.sprite.set_image(player.sprite, initial_frame, .Unflipped)
 
@@ -88,11 +103,32 @@ player_create :: proc(
 	return player
 }
 
+player_anim_update :: proc(player: ^Player) {
+	if player.prev_state != player.state {
+		animator_destroy(&player.animator)
+		new_anim: Animation
+		#partial switch player.state {
+		case .idle:
+			#partial switch player.direction {
+			case .down:
+				new_anim = anim_idle_down
+			case .up:
+				new_anim = anim_idle_up
+			case:
+				new_anim = anim_idle_down
+			}
+		}
+		player.animator = animator_create(&new_anim)
+	}
+}
+
 player_sprite_update :: proc "c" (sprite: ^pd.Sprite) {
 	context = global_ctx
-	player_process_move(&game_state.player)
-	player_vitals_update(&game_state.player)
-	animator_update(&game_state.player.animator, sprite)
+	gs.player.prev_state = gs.player.state
+	player_process_move(&gs.player)
+	player_vitals_update(&gs.player)
+	player_anim_update(&gs.player)
+	animator_update(&gs.player.animator, sprite)
 }
 
 //Movement
@@ -100,7 +136,6 @@ player_process_move :: proc(player: ^Player) {
 	current: pd.Buttons
 	pd_api.system.get_button_state(&current, nil, nil)
 	adjustment_value := player.speed
-
 	if .Down in current {
 		pd_api.sprite.move_by(player.sprite, 0, adjustment_value)
 		player.state = .walking
@@ -118,7 +153,7 @@ player_process_move :: proc(player: ^Player) {
 		player.state = .walking
 		player.direction = .up
 	} else {
-		player.state = .none
+		player.state = .idle
 	}
 }
 
@@ -177,7 +212,7 @@ player_vitals_update :: proc(player: ^Player) {
 		multiplier = 0.1
 	case .consuming:
 		multiplier = -0.1
-	case .none:
+	case .idle:
 		multiplier = 0
 	case .sleeping:
 		multiplier = -1.3
