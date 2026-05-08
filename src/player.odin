@@ -70,7 +70,7 @@ player_create :: proc(
 		pd.PDRect{bounds_x, bounds_y, player.width, player.height},
 	)
 
-	player.animator = animator_create(image_path, 4, 1000)
+	player.animator = animator_create(image_path, 6, 1000)
 	initial_frame := pd_api.graphics.get_table_bitmap(player.animator.table, 0)
 	pd_api.sprite.set_image(player.sprite, initial_frame, .Unflipped)
 
