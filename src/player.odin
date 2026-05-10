@@ -106,19 +106,26 @@ player_create :: proc(
 player_anim_update :: proc(player: ^Player) {
 	if player.prev_state != player.state {
 		animator_destroy(&player.animator)
-		new_anim: Animation
+		new_anim: ^Animation
 		#partial switch player.state {
 		case .idle:
 			#partial switch player.direction {
-			case .down:
-				new_anim = anim_idle_down
 			case .up:
-				new_anim = anim_idle_up
+				new_anim = &anim_idle_up
 			case:
-				new_anim = anim_idle_down
+				new_anim = &anim_idle_down
 			}
+		case .walking:
+			#partial switch player.direction {
+			case .up:
+				new_anim = &anim_idle_up
+			case:
+				new_anim = &anim_idle_down
+			}
+		case:
+			new_anim = &anim_idle_down
 		}
-		player.animator = animator_create(&new_anim)
+		player.animator = animator_create(new_anim)
 	}
 }
 
