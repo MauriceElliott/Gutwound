@@ -53,13 +53,7 @@ anim_idle_up := Animation {
 	frame_duration = 1000,
 }
 
-player_create :: proc(
-	image_path: cstring,
-	x: f32,
-	y: f32,
-	width: f32 = 48,
-	height: f32 = 66,
-) -> Player {
+player_create :: proc(x: f32, y: f32, width: f32 = 48, height: f32 = 66) -> Player {
 
 	player_vitals := Player_Vitals {
 		Vital{"health", 100},
